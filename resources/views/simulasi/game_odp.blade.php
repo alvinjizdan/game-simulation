@@ -88,10 +88,6 @@
 </div>
 
 <script>
-    const currentLevel = "{{ $progress->tingkat_kesulitan ?? 'Beginner' }}";
-    if(currentLevel === 'Expert') {
-        document.querySelectorAll('.step').forEach(el => el.style.opacity = '0.5');
-    }
     const materiODP = {
         'odp': { judul: 'Kotak ODP (Closure/Pole)', deskripsi: 'Menyediakan titik terminasi antara kabel distribusi jaringan dengan kabel drop yang menuju langsung ke rumah pelanggan. Tahan cuaca dan panas.' }
     };

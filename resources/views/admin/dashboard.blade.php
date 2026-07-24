@@ -1,153 +1,157 @@
 @extends('layouts.app')
 
 @section('content')
-<div style="display: flex; flex: 1;">
+<div class="shad-layout">
     <!-- Sidebar -->
-    <div style="width: 250px; background: var(--navy); padding: 2rem; color: white;">
-        <h3 style="margin-top: 0; color: white;">Ruang Admin</h3>
-        <ul style="list-style: none; padding: 0;">
-            <li style="margin-bottom: 10px;"><a href="{{ route('admin.dashboard') }}" style="color: white; text-decoration: none;">Rapor Peserta (Dashboard)</a></li>
-            <li style="margin-bottom: 10px;"><a href="{{ route('admin.peserta') }}" style="color: #94a3b8; text-decoration: none;">Kelola Peserta</a></li>
-        </ul>
-    </div>
+    <aside class="shad-sidebar">
+        <div class="shad-sidebar-header">
+            Viberlink Admin
+        </div>
+        
+        <div class="shad-nav-group">
+            <div class="shad-nav-label">Dashboard</div>
+            <a href="{{ route('admin.dashboard') }}" class="shad-link active">
+                <i data-lucide="layout-dashboard"></i>
+                Rapor Peserta
+            </a>
+            
+            <div class="shad-nav-label" style="margin-top: 1.5rem;">Manajemen</div>
+            <a href="{{ route('admin.peserta') }}" class="shad-link">
+                <i data-lucide="users"></i>
+                Kelola Peserta
+            </a>
+            <a href="{{ route('admin.materi.index') }}" class="shad-link">
+                <i data-lucide="book-open"></i>
+                Kelola Materi
+            </a>
+            <a href="{{ route('admin.kuis.index') }}" class="shad-link">
+                <i data-lucide="check-square"></i>
+                Kelola Kuis
+            </a>
+        </div>
+
+        <div style="margin-top: auto; border-top: 1px solid var(--border-glass); padding-top: 1rem; display: flex; flex-direction: column; gap: 1rem;">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <div style="width: 32px; height: 32px; background: var(--primary); border-radius: 9999px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: black; flex-shrink: 0;">
+                    {{ strtoupper(substr(Auth::user()->username, 0, 1)) }}
+                </div>
+                <div style="overflow: hidden;">
+                    <div style="font-size: 0.875rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ Auth::user()->nama_lengkap ?? Auth::user()->username }}</div>
+                    <div style="font-size: 0.75rem; color: var(--text-secondary);">Administrator</div>
+                </div>
+            </div>
+            <form action="{{ route('logout') }}" method="POST" style="width: 100%;">
+                @csrf
+                <button type="submit" class="btn btn-outline" style="width: 100%; border-color: rgba(239,68,68,0.5); color: var(--danger); justify-content: center; gap: 6px;">
+                    <i data-lucide="log-out" style="width: 14px; height: 14px;"></i> Logout
+                </button>
+            </form>
+        </div>
+    </aside>
 
     <!-- Main Content -->
-    <div style="flex: 1; padding: 2rem;">
-        <h2 style="margin-top: 0;">Rapor Progres Peserta</h2>
-        <p style="color: #64748b; margin-bottom: 20px;">Pantau teknisi baru yang telah menyelesaikan Misi Pengenalan FTTH.</p>
-        
-        <div style="display: flex; gap: 20px; margin-bottom: 30px;">
-            <div class="card" style="flex: 1; text-align: center;">
-                <h3 style="font-size: 2rem; margin: 0; color: var(--navy);">{{ $totalPeserta }}</h3>
-                <p style="margin: 0; color: #64748b;">Total Peserta</p>
-            </div>
-            <div class="card" style="flex: 1; text-align: center; border-bottom: 4px solid var(--success);">
-                <h3 style="font-size: 2rem; margin: 0; color: var(--success);">{{ $selesai }}</h3>
-                <p style="margin: 0; color: #64748b;">Misi Selesai</p>
-            </div>
-            <div class="card" style="flex: 1; text-align: center; border-bottom: 4px solid var(--danger);">
-                <h3 style="font-size: 2rem; margin: 0; color: var(--danger);">{{ $belumSelesai }}</h3>
-                <p style="margin: 0; color: #64748b;">Belum Selesai</p>
-            </div>
-        </div>
+    <main class="shad-main">
 
-        <div style="background: var(--card-bg); padding: 1.5rem; border-radius: 8px;">
-            <table style="width: 100%; border-collapse: collapse; text-align: left;">
-                <thead>
-                    <tr style="border-bottom: 2px solid #e2e8f0;">
-                        <th style="padding: 10px;">Nama Lengkap</th>
-                        <th style="padding: 10px;">Username</th>
-                        <th style="padding: 10px;">Status Misi</th>
-                        <th style="padding: 10px;">Waktu Penyelesaian</th>
-                        <th style="padding: 10px;">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($peserta as $p)
-                    <tr style="border-bottom: 1px solid #e2e8f0;">
-                        <td style="padding: 10px; font-weight: 500;">{{ $p->nama_lengkap }}</td>
-                        <td style="padding: 10px; color: #64748b;">{{ $p->username }}</td>
-                        <td style="padding: 10px;">
-                            @php
-                                $tugas = $p->tugas;
-                                if($tugas) {
-                                    $count = $tugas->progress_count;
-                                    $percent = $tugas->progress_percentage;
-                                    if($count == 5) {
-                                        echo "<span style='background: var(--success); color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; font-weight: bold;'>Lulus (5/5)</span>";
-                                    } elseif($count > 0) {
-                                        echo "<span style='background: var(--warning); color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; font-weight: bold;'>Proses ($count/5)</span>";
-                                    } else {
-                                        echo "<span style='background: var(--danger); color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; font-weight: bold;'>0/5 Selesai</span>";
-                                    }
-                                } else {
-                                    echo "<span style='background: var(--danger); color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; font-weight: bold;'>0/5 Selesai</span>";
-                                }
-                            @endphp
-                        </td>
-                        <td style="padding: 10px; color: #64748b;">
-                            @php
-                                $completedModules = $p->progressModul->where('status_tugas', 'Selesai');
-                                $lastCompleted = $completedModules->max('updated_at');
-                            @endphp
-                            {{ $lastCompleted ? date('d/m/Y H:i', strtotime($lastCompleted)) : '-' }}
-                        </td>
-                        <td style="padding: 10px;">
-                            <div style="display: flex; gap: 5px;">
-                                <button onclick="openModal({{ $p->id_user }})" style="background: #38bdf8; color: var(--navy); border: none; padding: 5px 10px; border-radius: 4px; font-size: 0.8em; font-weight: bold; cursor: pointer;">Kelola Level</button>
-                                <a href="{{ route('admin.peserta.edit', $p->id_user) }}" style="background: var(--secondary); color: var(--navy); padding: 5px 10px; text-decoration: none; border-radius: 4px; font-size: 0.8em; font-weight: bold;">Edit Akun</a>
-                                <form action="{{ route('admin.peserta.reset', $p->id_user) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus/mereset seluruh progres misi peserta ini kembali ke 0?');">
-                                    @csrf
-                                    <button type="submit" style="background: var(--danger); color: white; border: none; padding: 5px 10px; border-radius: 4px; font-size: 0.8em; font-weight: bold; cursor: pointer;">Hapus Progres</button>
-                                </form>
-                            </div>
 
-                            <!-- Modal Kelola Level -->
-                            <div id="modal-{{ $p->id_user }}" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); align-items:center; justify-content:center; z-index: 1000;">
-                                <div style="background: white; padding: 20px; border-radius: 8px; width: 400px; max-width: 90%;">
-                                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                                        <h3 style="margin:0;">Kelola Level: {{ $p->nama_lengkap }}</h3>
-                                        <button onclick="closeModal({{ $p->id_user }})" style="border:none; background:none; font-size:1.5rem; cursor:pointer;">&times;</button>
+        <!-- Content Area -->
+        <div class="shad-content animate-fade-in">
+            <div style="margin-bottom: 2rem;">
+                <h1 style="font-size: 1.875rem; font-weight: 700; margin-bottom: 0.25rem;">Rapor Progres Peserta</h1>
+                <p style="color: var(--text-secondary); font-size: 0.875rem;">Pantau teknisi baru yang telah menyelesaikan Misi Pengenalan FTTH.</p>
+            </div>
+            
+            <!-- Cards -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+                <div class="glass-card" style="border-left: 4px solid var(--primary); padding: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div>
+                            <div style="color: var(--text-secondary); font-size: 0.875rem; font-weight: 500; margin-bottom: 0.5rem;">Total Peserta</div>
+                            <div class="tabular-nums" style="font-size: 2rem; font-weight: 700;">{{ $totalPeserta }}</div>
+                        </div>
+                        <i data-lucide="users" style="color: var(--primary);"></i>
+                    </div>
+                </div>
+
+                <div class="glass-card" style="border-left: 4px solid var(--success); padding: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div>
+                            <div style="color: var(--text-secondary); font-size: 0.875rem; font-weight: 500; margin-bottom: 0.5rem;">Misi Selesai</div>
+                            <div class="tabular-nums" style="font-size: 2rem; font-weight: 700;">{{ $selesai }}</div>
+                        </div>
+                        <i data-lucide="check-circle" style="color: var(--success);"></i>
+                    </div>
+                </div>
+
+                <div class="glass-card" style="border-left: 4px solid var(--danger); padding: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div>
+                            <div style="color: var(--text-secondary); font-size: 0.875rem; font-weight: 500; margin-bottom: 0.5rem;">Belum Selesai</div>
+                            <div class="tabular-nums" style="font-size: 2rem; font-weight: 700;">{{ $belumSelesai }}</div>
+                        </div>
+                        <i data-lucide="alert-circle" style="color: var(--danger);"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="glass-card" style="padding: 0; overflow: hidden;">
+                <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-glass);">
+                    <h3 style="font-size: 1.125rem; font-weight: 600;">Detail Progres Peserta</h3>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Nama Peserta</th>
+                                <th>OLT</th>
+                                <th>ODC</th>
+                                <th>ODP</th>
+                                <th>ONT</th>
+                                <th>Splicing</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($peserta as $p)
+                            <tr>
+                                <td style="font-weight: 500; color: var(--text-primary);">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <div style="width: 24px; height: 24px; background: rgba(255,255,255,0.1); border-radius: 9999px; display: flex; align-items: center; justify-content: center; font-size: 0.65rem;">
+                                            {{ strtoupper(substr($p->username, 0, 1)) }}
+                                        </div>
+                                        {{ $p->nama_lengkap ?? $p->username }}
                                     </div>
-                                    <div id="notif-{{ $p->id_user }}" style="color: white; background: #22c55e; padding: 8px; border-radius: 4px; font-size: 0.9em; margin-bottom: 10px; display: none;"></div>
-                                    <table style="width: 100%; border-collapse: collapse;">
-                                        @foreach($p->progressModul as $mod)
-                                        <tr style="border-bottom: 1px solid #ddd;">
-                                            <td style="padding: 10px 0;">{{ $mod->nama_modul }}</td>
-                                            <td style="padding: 10px 0; text-align: right;">
-                                                <select onchange="updateLevel({{ $mod->id_progress }}, this.value, {{ $p->id_user }})" style="padding: 5px; border-radius: 4px; border: 1px solid #ccc; font-weight:bold;">
-                                                    <option value="Beginner" {{ $mod->tingkat_kesulitan == 'Beginner' ? 'selected' : '' }}>Beginner</option>
-                                                    <option value="Intermediate" {{ $mod->tingkat_kesulitan == 'Intermediate' ? 'selected' : '' }}>Intermediate</option>
-                                                    <option value="Expert" {{ $mod->tingkat_kesulitan == 'Expert' ? 'selected' : '' }}>Expert</option>
-                                                </select>
-                                            </td>
-                                        </tr>
-                                        @endforeach
-                                    </table>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    @endforeach
-                    @if($peserta->isEmpty())
-                        <tr>
-                            <td colspan="4" style="text-align: center; padding: 20px; color: #94a3b8;">Belum ada peserta terdaftar.</td>
-                        </tr>
-                    @endif
-                </tbody>
-            </table>
+                                </td>
+                                @php $moduls = ['OLT', 'ODC', 'ODP', 'ONT', 'Splicing']; @endphp
+                                @foreach($moduls as $m)
+                                    @php
+                                        $prog = $p->progressModul->where('nama_modul', $m)->first();
+                                        $status = $prog ? $prog->status_tugas : 'Belum Selesai';
+                                    @endphp
+                                    <td>
+                                        @if($status == 'Selesai')
+                                            <span class="badge badge-success" style="display: inline-flex; align-items: center; gap: 4px;">
+                                                <i data-lucide="check" style="width: 12px; height: 12px;"></i> Selesai
+                                            </span>
+                                        @else
+                                            <span class="badge badge-pending" style="display: inline-flex; align-items: center; gap: 4px; opacity: 0.5;">
+                                                <i data-lucide="x" style="width: 12px; height: 12px;"></i> Belum
+                                            </span>
+                                        @endif
+                                    </td>
+                                @endforeach
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
         </div>
-    </div>
+    </main>
 </div>
 
-<script>
-function openModal(id) {
-    document.getElementById('modal-' + id).style.display = 'flex';
-}
-function closeModal(id) {
-    document.getElementById('modal-' + id).style.display = 'none';
-}
-function updateLevel(idProgress, levelBaru, userId) {
-    fetch('{{ route("admin.update_level") }}', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-        },
-        body: JSON.stringify({
-            id_progress: idProgress,
-            level_baru: levelBaru
-        })
-    })
-    .then(r => r.json())
-    .then(data => {
-        if(data.success) {
-            let notif = document.getElementById('notif-' + userId);
-            notif.innerText = data.message;
-            notif.style.display = 'block';
-            setTimeout(() => notif.style.display = 'none', 3000);
-        }
-    });
-}
-</script>
+<!-- Menyembunyikan Navbar bawaan layouts.app.blade.php khusus di halaman Admin ini -->
+<style>
+    body > .navbar { display: none !important; }
+</style>
 @endsection

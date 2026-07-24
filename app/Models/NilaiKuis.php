@@ -4,15 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ProgressModul extends Model
+class NilaiKuis extends Model
 {
-    protected $table = 'progress_modul';
-    protected $primaryKey = 'id_progress';
+    protected $table = 'nilai_kuis';
+    protected $primaryKey = 'id_nilai';
 
     protected $fillable = [
         'id_user',
         'nama_modul',
-        'status_tugas'
+        'skor_tertinggi'
     ];
 
     public function pengguna()

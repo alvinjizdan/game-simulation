@@ -93,10 +93,6 @@
 </div>
 
 <script>
-    const currentLevel = "{{ $progress->tingkat_kesulitan ?? 'Beginner' }}";
-    if(currentLevel === 'Expert') {
-        document.querySelectorAll('.step').forEach(el => el.style.opacity = '0.5');
-    }
     let leftReady = false;
     let rightReady = false;
 

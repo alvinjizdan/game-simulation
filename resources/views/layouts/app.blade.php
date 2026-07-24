@@ -4,56 +4,60 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Viberlink Fiber Optic System</title>
+    <title>Viberlink LMS</title>
+    <!-- CSS di-link ke style.css yang baru -->
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
-    <nav class="navbar" style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; background: var(--navy); border-bottom: 1px solid var(--navy-light);">
-        <div class="logo" style="display: flex; gap: 15px; align-items: center;">
-            <a href="{{ url('/') }}" style="color: white; text-decoration: none; font-weight: bold; font-size: 1.2rem;">Viberlink Edu</a>
+    <nav class="navbar">
+        <div style="display: flex; gap: 20px; align-items: center;">
+            <a href="{{ url('/') }}" style="color: white; text-decoration: none; font-weight: 800; font-size: 1.25rem; letter-spacing: -0.02em;">
+                <span class="text-gradient">Viberlink</span> LMS
+            </a>
             @auth
                 @if(Auth::user()->role === 'Peserta')
                     <div style="position: relative; display: inline-block;" class="dropdown-wrapper">
-                        <span style="color: var(--secondary); cursor: pointer; padding: 5px 0;">Kategori Misi ▼</span>
-                        <div class="dropdown-menu" style="display: none; position: absolute; background: white; min-width: 150px; box-shadow: 0 8px 16px rgba(0,0,0,0.2); z-index: 100; border-radius: 4px; top: 100%; left: 0;">
-                            <a href="{{ route('simulasi.game', 'olt') }}" style="color: var(--navy); padding: 10px 15px; text-decoration: none; display: block; border-bottom: 1px solid #e2e8f0;">Modul OLT</a>
-                            <a href="{{ route('simulasi.game', 'odc') }}" style="color: var(--navy); padding: 10px 15px; text-decoration: none; display: block; border-bottom: 1px solid #e2e8f0;">Modul ODC</a>
-                            <a href="{{ route('simulasi.game', 'odp') }}" style="color: var(--navy); padding: 10px 15px; text-decoration: none; display: block; border-bottom: 1px solid #e2e8f0;">Modul ODP</a>
-                            <a href="{{ route('simulasi.game', 'ont') }}" style="color: var(--navy); padding: 10px 15px; text-decoration: none; display: block; border-bottom: 1px solid #e2e8f0;">Modul ONT</a>
-                            <a href="{{ route('simulasi.game', 'kabel') }}" style="color: var(--navy); padding: 10px 15px; text-decoration: none; display: block;">Modul Splicing</a>
+                        <span style="color: var(--text-secondary); cursor: pointer; padding: 5px 0; font-weight: 500;">Modul Tersedia ▼</span>
+                        <div class="dropdown-menu glass-panel" style="display: none; position: absolute; min-width: 180px; z-index: 100; top: 100%; left: 0; padding: 0.5rem; margin-top: 10px;">
+                            <a href="{{ route('peserta.modul.detail', 'olt') }}" class="sidebar-link" style="margin-bottom: 2px;">Modul OLT</a>
+                            <a href="{{ route('peserta.modul.detail', 'odc') }}" class="sidebar-link" style="margin-bottom: 2px;">Modul ODC</a>
+                            <a href="{{ route('peserta.modul.detail', 'odp') }}" class="sidebar-link" style="margin-bottom: 2px;">Modul ODP</a>
+                            <a href="{{ route('peserta.modul.detail', 'ont') }}" class="sidebar-link" style="margin-bottom: 2px;">Modul ONT</a>
+                            <a href="{{ route('peserta.modul.detail', 'kabel') }}" class="sidebar-link" style="margin-bottom: 0;">Modul Splicing</a>
                         </div>
                     </div>
                     <style>
-                        .dropdown-wrapper:hover .dropdown-menu { display: block !important; }
-                        .dropdown-menu a:hover { background: #f1f5f9; }
+                        .dropdown-wrapper:hover .dropdown-menu { display: block !important; animation: fadeIn 0.2s ease-out; }
                     </style>
                 @endif
             @endauth
         </div>
         <div>
             @auth
-                <span style="margin-right: 15px; color: white;">Halo, {{ Auth::user()->nama_lengkap ?? Auth::user()->username }}</span>
+                <span style="margin-right: 15px; color: var(--text-secondary); font-size: 0.95rem;">
+                    Halo, <span style="color: var(--text-primary); font-weight: 600;">{{ Auth::user()->nama_lengkap ?? Auth::user()->username }}</span>
+                </span>
                 @if(Auth::user()->role === 'Admin')
-                    <a href="{{ route('admin.dashboard') }}" style="color: var(--secondary); text-decoration: none; margin-right: 15px; font-weight: bold;">Ruang Admin</a>
+                    <a href="{{ route('admin.dashboard') }}" style="color: var(--primary); text-decoration: none; margin-right: 20px; font-weight: 600;">Ruang Admin</a>
                 @endif
                 <form action="{{ route('logout') }}" method="POST" style="display: inline;">
                     @csrf
-                    <button type="submit" class="btn" style="background: #ef4444; border: none; padding: 5px 15px; font-size: 0.9rem; color: white;">Logout</button>
+                    <button type="submit" class="btn btn-outline" style="border-color: var(--danger); color: var(--danger); padding: 0.4rem 1rem;">Logout</button>
                 </form>
             @else
-                <a href="{{ route('login') }}" class="btn" style="background: var(--primary); color: white;">Login</a>
+                <a href="{{ route('login') }}" class="btn btn-primary">Masuk / Login</a>
             @endauth
         </div>
     </nav>
 
-    <main style="display: flex; flex-direction: column; flex: 1;">
+    <main style="display: flex; flex-direction: column; flex: 1; width: 100%;">
         @yield('content')
     </main>
 
-    <footer style="background: var(--navy); color: #cbd5e1; text-align: center; padding: 1.5rem; border-top: 1px solid var(--navy-light); font-size: 0.9rem;">
-        &copy; {{ date('Y') }} PT Khatulistiwa Jaringan Indonesia (Viberlink). Seluruh hak cipta dilindungi.
-    </footer>
-
-    <script src="{{ asset('js/app.js') }}"></script>
+    <script>
+        lucide.createIcons();
+    </script>
 </body>
 </html>

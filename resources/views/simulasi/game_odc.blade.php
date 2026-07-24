@@ -103,10 +103,6 @@
 </div>
 
 <script>
-    const currentLevel = "{{ $progress->tingkat_kesulitan ?? 'Beginner' }}";
-    if(currentLevel === 'Expert') {
-        document.querySelectorAll('.step').forEach(el => el.style.opacity = '0.5');
-    }
     const materiODC = {
         'feeder': { judul: 'Feeder Panel', deskripsi: 'Titik terminasi untuk kabel utama (Kabel Feeder) yang datang langsung dari Sentral (OLT). Kapasitasnya sangat besar.' },
         'splitter': { judul: 'Pasif Splitter (1:4)', deskripsi: 'Komponen kaca prisma tanpa listrik yang memecah 1 sinar laser dari kabel feeder menjadi 4 sinar laser ke kabel distribusi. Setiap pembagian akan menurunkan daya optik (Redaman).' },

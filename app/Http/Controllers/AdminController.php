@@ -94,17 +94,4 @@ class AdminController extends Controller
         ProgressModul::where('id_user', $id)->update(['status_tugas' => 'Belum Selesai']);
         return redirect()->back()->with('success', 'Progres misi peserta berhasil di-reset menjadi 0/5');
     }
-
-    public function updateLevelModul(Request $request)
-    {
-        $request->validate([
-            'id_progress' => 'required|integer',
-            'level_baru' => 'required|in:Beginner,Intermediate,Expert'
-        ]);
-
-        $progress = ProgressModul::findOrFail($request->id_progress);
-        $progress->update(['tingkat_kesulitan' => $request->level_baru]);
-
-        return response()->json(['success' => true, 'message' => "Level Modul {$progress->nama_modul} berhasil diperbarui menjadi {$request->level_baru}."]);
-    }
 }

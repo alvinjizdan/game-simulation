@@ -167,15 +167,6 @@
 </div>
 
 <script>
-    // Inisialisasi Level dari Database
-    const currentLevel = "{{ $progress->tingkat_kesulitan ?? 'Beginner' }}";
-    
-    // Contoh penyesuaian UI berdasarkan level
-    if(currentLevel === 'Expert') {
-        // Sembunyikan semua teks petunjuk jika Expert
-        document.querySelectorAll('.step').forEach(el => el.style.opacity = '0.5');
-    }
-
     // --- DATA MATERI EDUKASI (KAMUS) ---
     const materiOLT = {
         'fan': { judul: 'Fan Tray (Modul Kipas)', deskripsi: 'OLT memproses data bergiga-giga per detik yang menghasilkan panas ekstrem. Modul kipas ini bisa dicabut-pasang (hot-swappable) tanpa mematikan OLT. Jika kipas mati, OLT akan overheat dan internet ribuan pelanggan bisa putus.' },

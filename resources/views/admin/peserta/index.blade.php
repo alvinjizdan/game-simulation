@@ -1,96 +1,121 @@
 @extends('layouts.app')
 
 @section('content')
-<div style="display: flex; flex: 1;">
+<div class="shad-layout">
     <!-- Sidebar -->
-    <div style="width: 250px; background: var(--navy); padding: 2rem; color: white;">
-        <h3 style="margin-top: 0; color: white;">Ruang Admin</h3>
-        <ul style="list-style: none; padding: 0;">
-            <li style="margin-bottom: 10px;"><a href="{{ route('admin.dashboard') }}" style="color: #94a3b8; text-decoration: none;">Rapor Peserta (Dashboard)</a></li>
-            <li style="margin-bottom: 10px;"><a href="{{ route('admin.peserta') }}" style="color: white; text-decoration: none;">Kelola Peserta</a></li>
-        </ul>
-    </div>
+    <aside class="shad-sidebar">
+        <div class="shad-sidebar-header">
+            Viberlink Admin
+        </div>
+        
+        <div class="shad-nav-group">
+            <div class="shad-nav-label">Dashboard</div>
+            <a href="{{ route('admin.dashboard') }}" class="shad-link">
+                <i data-lucide="layout-dashboard"></i>
+                Rapor Peserta
+            </a>
+            
+            <div class="shad-nav-label" style="margin-top: 1.5rem;">Manajemen</div>
+            <a href="{{ route('admin.peserta') }}" class="shad-link active">
+                <i data-lucide="users"></i>
+                Kelola Peserta
+            </a>
+            <a href="{{ route('admin.materi.index') }}" class="shad-link">
+                <i data-lucide="book-open"></i>
+                Kelola Materi
+            </a>
+            <a href="{{ route('admin.kuis.index') }}" class="shad-link">
+                <i data-lucide="check-square"></i>
+                Kelola Kuis
+            </a>
+        </div>
+
+        <div style="margin-top: auto; border-top: 1px solid var(--border-glass); padding-top: 1rem; display: flex; flex-direction: column; gap: 1rem;">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <div style="width: 32px; height: 32px; background: var(--primary); border-radius: 9999px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: black; flex-shrink: 0;">
+                    {{ strtoupper(substr(Auth::user()->username, 0, 1)) }}
+                </div>
+                <div style="overflow: hidden;">
+                    <div style="font-size: 0.875rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ Auth::user()->nama_lengkap ?? Auth::user()->username }}</div>
+                    <div style="font-size: 0.75rem; color: var(--text-secondary);">Administrator</div>
+                </div>
+            </div>
+            <form action="{{ route('logout') }}" method="POST" style="width: 100%;">
+                @csrf
+                <button type="submit" class="btn btn-outline" style="width: 100%; border-color: rgba(239,68,68,0.5); color: var(--danger); justify-content: center; gap: 6px;">
+                    <i data-lucide="log-out" style="width: 14px; height: 14px;"></i> Logout
+                </button>
+            </form>
+        </div>
+    </aside>
 
     <!-- Main Content -->
-    <div style="flex: 1; padding: 2rem;">
-        <h2 style="margin-top: 0;">Kelola Peserta (Teknisi Baru)</h2>
+    <main class="shad-main">
 
-        @if(session('success'))
-            <div style="background: rgba(34, 197, 94, 0.1); color: var(--success); padding: 10px; border-radius: 4px; margin-bottom: 15px; border: 1px solid var(--success);">
-                {{ session('success') }}
+
+        <!-- Content Area -->
+        <div class="shad-content animate-fade-in">
+            <div style="margin-bottom: 2rem;">
+                <h1 style="font-size: 1.875rem; font-weight: 700; margin-bottom: 0.25rem;">Kelola Akun Peserta</h1>
+                <p style="color: var(--text-secondary); font-size: 0.875rem;">Manajemen data pengguna dan teknisi yang terdaftar di sistem.</p>
             </div>
-        @endif
+            
+            @if(session('success'))
+                <div class="glass-panel" style="border-left: 4px solid var(--success); padding: 1rem; margin-bottom: 2rem; color: var(--text-primary); display: flex; align-items: center; gap: 10px;">
+                    <i data-lucide="check-circle" style="color: var(--success); width: 20px; height: 20px;"></i> {{ session('success') }}
+                </div>
+            @endif
 
-        @if($errors->any())
-            <div style="background: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 10px; border-radius: 4px; margin-bottom: 15px; border: 1px solid #ef4444;">
-                <ul style="margin: 0; padding-left: 20px;">
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
-        <div style="display: flex; gap: 20px; align-items: flex-start;">
-            <!-- Tabel Daftar Peserta -->
-            <div class="admin-card" style="flex: 2; padding: 1.5rem;">
-                <h3 style="margin-top: 0;">Daftar Akun Peserta</h3>
-                <table style="width: 100%; border-collapse: collapse; text-align: left;">
-                    <thead>
-                        <tr style="border-bottom: 2px solid #e2e8f0;">
-                            <th style="padding: 10px;">Nama Lengkap</th>
-                            <th style="padding: 10px;">Username</th>
-                            <th style="padding: 10px; width: 150px;">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($peserta as $p)
-                        <tr style="border-bottom: 1px solid #e2e8f0;">
-                            <td style="padding: 10px;">{{ $p->nama_lengkap }}</td>
-                            <td style="padding: 10px;">{{ $p->username }}</td>
-                            <td style="padding: 10px;">
-                                <div style="display: flex; gap: 5px;">
-                                    <a href="{{ route('admin.peserta.edit', $p->id_user) }}" class="btn" style="background: #eab308; padding: 5px 10px; font-size: 0.8rem; text-decoration: none; color: white;">Edit</a>
-                                    <form action="{{ route('admin.peserta.destroy', $p->id_user) }}" method="POST" onsubmit="return confirm('Hapus peserta ini? Seluruh progres tugasnya akan hilang.');">
-                                        @csrf @method('DELETE')
-                                        <button type="submit" class="btn" style="background: #ef4444; padding: 5px 10px; font-size: 0.8rem; border: none; cursor: pointer; color: white;">Hapus</button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                        @endforeach
-                        @if($peserta->isEmpty())
+            <div class="glass-card" style="padding: 0; overflow: hidden;">
+                <div style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead>
                             <tr>
-                                <td colspan="3" style="text-align: center; padding: 20px; color: #94a3b8;">Belum ada akun peserta.</td>
+                                <th>Username</th>
+                                <th>Nama Lengkap</th>
+                                <th>Email</th>
+                                <th style="text-align: right;">Aksi</th>
                             </tr>
-                        @endif
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach($peserta as $p)
+                            <tr>
+                                <td style="font-weight: 500; color: var(--text-primary);">
+                                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                        <div style="width: 32px; height: 32px; background: rgba(255,255,255,0.05); border-radius: 9999px; display: flex; align-items: center; justify-content: center;">
+                                            <i data-lucide="user" style="width: 16px; height: 16px; color: var(--text-secondary);"></i>
+                                        </div>
+                                        {{ $p->username }}
+                                    </div>
+                                </td>
+                                <td>{{ $p->nama_lengkap ?? '-' }}</td>
+                                <td>{{ $p->email ?? '-' }}</td>
+                                <td style="text-align: right;">
+                                    <form action="{{ route('admin.peserta.reset', $p->id_user) }}" method="POST" style="display: inline;" onsubmit="return confirm('Reset progres simulasi untuk {{ $p->username }}?');">
+                                        @csrf
+                                        <button type="submit" class="btn btn-outline" style="padding: 0.4rem 0.75rem; font-size: 0.75rem; display: inline-flex; align-items: center; gap: 4px;">
+                                            <i data-lucide="rotate-ccw" style="width: 14px; height: 14px;"></i> Reset Progres
+                                        </button>
+                                    </form>
+                                    <form action="{{ route('admin.peserta.destroy', $p->id_user) }}" method="POST" style="display: inline;" onsubmit="return confirm('Hapus peserta {{ $p->username }} secara permanen?');">
+                                        @csrf @method('DELETE')
+                                        <button type="submit" class="btn btn-outline" style="border-color: rgba(239,68,68,0.5); color: var(--danger); padding: 0.4rem 0.75rem; font-size: 0.75rem; display: inline-flex; align-items: center; gap: 4px; margin-left: 0.5rem;">
+                                            <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i> Hapus
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
-            <!-- Form Tambah Peserta -->
-            <div class="admin-card" style="flex: 1; padding: 1.5rem; background: var(--bg-light); border: 1px solid #cbd5e1;">
-                <h3 style="margin-top: 0; border-bottom: 2px solid var(--primary); padding-bottom: 10px;">Daftarkan Peserta Baru</h3>
-                <form action="{{ route('admin.peserta.store') }}" method="POST" style="display: flex; flex-direction: column; gap: 15px;">
-                    @csrf
-                    <div>
-                        <label style="display: block; margin-bottom: 5px; font-weight: 500;">Nama Lengkap</label>
-                        <input type="text" name="nama_lengkap" value="{{ old('nama_lengkap') }}" style="width: 100%;" required>
-                    </div>
-                    <div>
-                        <label style="display: block; margin-bottom: 5px; font-weight: 500;">Username (Untuk Login)</label>
-                        <input type="text" name="username" value="{{ old('username') }}" style="width: 100%;" required>
-                    </div>
-                    <div>
-                        <label style="display: block; margin-bottom: 5px; font-weight: 500;">Password Sementara</label>
-                        <input type="password" name="password" style="width: 100%;" required>
-                        <small style="color: #64748b;">Minimal 6 karakter.</small>
-                    </div>
-                    
-                    <button type="submit" class="btn" style="margin-top: 10px;">Buat Akun Peserta</button>
-                </form>
-            </div>
         </div>
-    </div>
+    </main>
 </div>
+
+<style>
+    body > .navbar { display: none !important; }
+</style>
 @endsection
