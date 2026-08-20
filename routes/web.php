@@ -6,8 +6,16 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\SimulasiGameController;
 
 Route::get('/', function () {
+    if (!Illuminate\Support\Facades\Auth::check()) {
+        return redirect()->route('login');
+    }
+
+    if (Illuminate\Support\Facades\Auth::user()->role === 'Admin') {
+        return redirect()->route('admin.dashboard');
+    }
+
     $progressModul = collect();
-    if (Illuminate\Support\Facades\Auth::check() && Illuminate\Support\Facades\Auth::user()->role === 'Peserta') {
+    if (Illuminate\Support\Facades\Auth::user()->role === 'Peserta') {
         $progressModul = App\Models\ProgressModul::where('id_user', Illuminate\Support\Facades\Auth::user()->id_user)->get();
         
         // Ensure all 5 modules exist for the user

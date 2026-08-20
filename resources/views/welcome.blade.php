@@ -62,24 +62,7 @@
                     @endforeach
                 </div>
             </div>
-        @elseif(Auth::user()->role === 'Admin')
-            <div class="container animate-fade-in" style="padding-top: 4rem; padding-bottom: 4rem;">
-                <div class="glass-card" style="text-align: center; max-width: 500px; margin: 0 auto;">
-                    <h3 style="margin-bottom: 1rem;">Selamat datang, Admin!</h3>
-                    <p style="color: var(--text-secondary); margin-bottom: 2rem;">Silakan menuju Ruang Admin untuk mengelola data peserta, kuis, dan materi pembelajaran.</p>
-                    <a href="{{ route('admin.dashboard') }}" class="btn btn-primary">Masuk ke Ruang Admin</a>
-                </div>
-            </div>
         @endif
-    @else
-        <!-- Guest View -->
-        <div class="container animate-fade-in" style="padding-top: 4rem; padding-bottom: 4rem;">
-            <div style="text-align: center;">
-                <a href="{{ route('login') }}" class="btn btn-primary" style="padding: 1rem 2.5rem; font-size: 1.1rem; border-radius: var(--radius-full);">
-                    Mulai Pembelajaran
-                </a>
-            </div>
-        </div>
     @endauth
 
 @endsection
