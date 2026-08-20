@@ -9,7 +9,7 @@ class MateriController extends Controller
 {
     public function index()
     {
-        $materi = Materi::orderBy('nama_modul')->orderBy('urutan')->get();
+        $materi = Materi::orderBy('nama_modul')->orderBy('urutan')->paginate(5);
         return view('admin.materi.index', compact('materi'));
     }
 
@@ -59,3 +59,4 @@ class MateriController extends Controller
         return redirect()->route('admin.materi.index')->with('success', 'Materi berhasil dihapus');
     }
 }
+

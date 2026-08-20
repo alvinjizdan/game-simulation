@@ -5,7 +5,7 @@
     <!-- Sidebar -->
     <aside class="shad-sidebar">
         <div class="shad-sidebar-header">
-            Viberlink Admin
+            ViberLink Admin
         </div>
         
         <div class="shad-nav-group">
@@ -54,14 +54,16 @@
 
 
         <!-- Content Area -->
-        <div class="shad-content animate-fade-in">
-            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem;">
-                <div>
-                    <h1 style="font-size: 1.875rem; font-weight: 700; margin-bottom: 0.25rem;">Kelola Bank Soal Kuis</h1>
-                    <p style="color: var(--text-secondary); font-size: 0.875rem;">Manajemen soal pilihan ganda (Multiple Choice) per modul pembelajaran.</p>
-                </div>
-                <button type="button" onclick="openModal('modal-create')" class="btn btn-primary" style="display: inline-flex; gap: 0.5rem; align-items: center;">
-                    <i data-lucide="plus" style="width: 16px; height: 16px;"></i> Tambah Soal
+        <div class="shad-content">
+            
+            <div id="table-view" class="animate-fade-in">
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem;">
+                    <div>
+                        <h1 style="font-size: 1.875rem; font-weight: 700; margin-bottom: 0.25rem;">Kelola Bank Soal Kuis</h1>
+                        <p style="color: var(--text-secondary); font-size: 0.875rem;">Manajemen soal pilihan ganda (Multiple Choice) per modul pembelajaran.</p>
+                    </div>
+                    <button type="button" onclick="showCreateForm()" class="btn btn-primary" style="display: inline-flex; gap: 0.5rem; align-items: center;">
+                        <i data-lucide="plus" style="width: 16px; height: 16px;"></i> Tambah Soal
                 </button>
             </div>
 
@@ -99,7 +101,7 @@
                                     </div>
                                 </td>
                                 <td style="text-align: right;">
-                                    <button type="button" onclick="openModal('modal-edit-{{ $k->id_kuis }}')" class="btn btn-outline" style="padding: 0.4rem 0.75rem; font-size: 0.75rem; display: inline-flex; align-items: center; gap: 4px;">
+                                    <button type="button" onclick="showEditForm('form-edit-{{ $k->id_kuis }}')" class="btn btn-outline" style="padding: 0.4rem 0.75rem; font-size: 0.75rem; display: inline-flex; align-items: center; gap: 4px;">
                                         <i data-lucide="pencil" style="width: 14px; height: 14px;"></i> Edit
                                     </button>
                                     <form action="{{ route('admin.kuis.destroy', $k->id_kuis) }}" method="POST" style="display: inline;" onsubmit="return confirm('Hapus soal ini?');">
@@ -114,151 +116,163 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
-            <!-- Modal Create -->
-            <div id="modal-create" class="shad-dialog-overlay">
-                <div class="shad-dialog">
-                    <div class="shad-dialog-header">
-                        <div class="shad-dialog-title">Tambah Soal Kuis</div>
-                        <div class="shad-dialog-description">Isi form di bawah ini untuk menambahkan soal pilihan ganda.</div>
-                    </div>
-                    <form action="{{ route('admin.kuis.store') }}" method="POST">
-                        @csrf
-                        <div style="display: flex; flex-direction: column; gap: 1rem;">
-                            <div>
-                                <label>Pilih Modul</label>
-                                <select name="nama_modul" required>
-                                    <option value="OLT">OLT</option>
-                                    <option value="ODC">ODC</option>
-                                    <option value="ODP">ODP</option>
-                                    <option value="ONT">ONT</option>
-                                    <option value="Splicing">Splicing</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label>Pertanyaan</label>
-                                <textarea name="pertanyaan" rows="3" required placeholder="Tuliskan pertanyaan..."></textarea>
-                            </div>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                                <div>
-                                    <label>Opsi A</label>
-                                    <input type="text" name="opsi_a" required>
-                                </div>
-                                <div>
-                                    <label>Opsi B</label>
-                                    <input type="text" name="opsi_b" required>
-                                </div>
-                                <div>
-                                    <label>Opsi C</label>
-                                    <input type="text" name="opsi_c" required>
-                                </div>
-                                <div>
-                                    <label>Opsi D</label>
-                                    <input type="text" name="opsi_d" required>
-                                </div>
-                            </div>
-                            <div>
-                                <label>Jawaban Benar</label>
-                                <select name="jawaban_benar" required>
-                                    <option value="A">A</option>
-                                    <option value="B">B</option>
-                                    <option value="C">C</option>
-                                    <option value="D">D</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="shad-dialog-footer">
-                            <button type="button" onclick="closeModal('modal-create')" class="btn btn-outline">Batal</button>
-                            <button type="submit" class="btn btn-primary">Simpan Soal</button>
-                        </div>
-                    </form>
+                <div style="padding: 1rem; border-top: 1px solid var(--border-glass);">
+                    {{ $kuis->links('pagination::bootstrap-5') }}
+                </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Modals Edit -->
-            @foreach($kuis as $k)
-            <div id="modal-edit-{{ $k->id_kuis }}" class="shad-dialog-overlay">
-                <div class="shad-dialog">
-                    <div class="shad-dialog-header">
-                        <div class="shad-dialog-title">Edit Soal Kuis</div>
-                        <div class="shad-dialog-description">Perbarui informasi soal pilihan ganda.</div>
-                    </div>
-                    <form action="{{ route('admin.kuis.update', $k->id_kuis) }}" method="POST">
-                        @csrf
-                        @method('PUT')
-                        <div style="display: flex; flex-direction: column; gap: 1rem;">
-                            <div>
-                                <label>Pilih Modul</label>
-                                <select name="nama_modul" required>
-                                    <option value="OLT" {{ $k->nama_modul == 'OLT' ? 'selected' : '' }}>OLT</option>
-                                    <option value="ODC" {{ $k->nama_modul == 'ODC' ? 'selected' : '' }}>ODC</option>
-                                    <option value="ODP" {{ $k->nama_modul == 'ODP' ? 'selected' : '' }}>ODP</option>
-                                    <option value="ONT" {{ $k->nama_modul == 'ONT' ? 'selected' : '' }}>ONT</option>
-                                    <option value="Splicing" {{ $k->nama_modul == 'Splicing' ? 'selected' : '' }}>Splicing</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label>Pertanyaan</label>
-                                <textarea name="pertanyaan" rows="3" required>{{ $k->pertanyaan }}</textarea>
-                            </div>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                                <div>
-                                    <label>Opsi A</label>
-                                    <input type="text" name="opsi_a" required value="{{ $k->opsi_a }}">
-                                </div>
-                                <div>
-                                    <label>Opsi B</label>
-                                    <input type="text" name="opsi_b" required value="{{ $k->opsi_b }}">
-                                </div>
-                                <div>
-                                    <label>Opsi C</label>
-                                    <input type="text" name="opsi_c" required value="{{ $k->opsi_c }}">
-                                </div>
-                                <div>
-                                    <label>Opsi D</label>
-                                    <input type="text" name="opsi_d" required value="{{ $k->opsi_d }}">
-                                </div>
-                            </div>
-                            <div>
-                                <label>Jawaban Benar</label>
-                                <select name="jawaban_benar" required>
-                                    <option value="A" {{ $k->jawaban_benar == 'A' ? 'selected' : '' }}>A</option>
-                                    <option value="B" {{ $k->jawaban_benar == 'B' ? 'selected' : '' }}>B</option>
-                                    <option value="C" {{ $k->jawaban_benar == 'C' ? 'selected' : '' }}>C</option>
-                                    <option value="D" {{ $k->jawaban_benar == 'D' ? 'selected' : '' }}>D</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="shad-dialog-footer">
-                            <button type="button" onclick="closeModal('modal-edit-{{ $k->id_kuis }}')" class="btn btn-outline">Batal</button>
-                            <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
-                        </div>
-                    </form>
-                </div>
+    <!-- Form Create -->
+    <div id="form-create" class="animate-fade-in" style="display: none; width: 100%;">
+        <div class="glass-card" style="padding: 2.5rem; width: 100%;">
+            <div style="margin-bottom: 2rem;">
+                <h2 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-primary);">Tambah Soal Kuis</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Isi form di bawah ini untuk menambahkan soal pilihan ganda.</p>
             </div>
-            @endforeach
+            <form action="{{ route('admin.kuis.store') }}" method="POST">
+                @csrf
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
+                    <div style="grid-column: span 2;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Pilih Modul</label>
+                        <select name="nama_modul" required style="width: 100%; padding: 0.85rem; border: 1px solid var(--border-glass); border-radius: 0.5rem; ">
+                            <option value="OLT">OLT</option>
+                            <option value="ODC">ODC</option>
+                            <option value="ODP">ODP</option>
+                            <option value="ONT">ONT</option>
+                            <option value="Splicing">Splicing</option>
+                        </select>
+                    </div>
+                    <div style="grid-column: span 2;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Pertanyaan</label>
+                        <textarea name="pertanyaan" rows="4" required placeholder="Tuliskan pertanyaan di sini..." style="width: 100%; padding: 0.85rem; border: 1px solid var(--border-glass); border-radius: 0.5rem; resize: vertical;"></textarea>
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Opsi A</label>
+                        <input type="text" name="opsi_a" required placeholder="Jawaban A" style="width: 100%; padding: 0.85rem; border: 1px solid var(--border-glass); border-radius: 0.5rem; ">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Opsi B</label>
+                        <input type="text" name="opsi_b" required placeholder="Jawaban B" style="width: 100%; padding: 0.85rem; border: 1px solid var(--border-glass); border-radius: 0.5rem; ">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Opsi C</label>
+                        <input type="text" name="opsi_c" required placeholder="Jawaban C" style="width: 100%; padding: 0.85rem; border: 1px solid var(--border-glass); border-radius: 0.5rem; ">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Opsi D</label>
+                        <input type="text" name="opsi_d" required placeholder="Jawaban D" style="width: 100%; padding: 0.85rem; border: 1px solid var(--border-glass); border-radius: 0.5rem; ">
+                    </div>
+                    <div style="grid-column: span 2;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Jawaban Benar</label>
+                        <select name="jawaban_benar" required style="width: 100%; padding: 0.85rem; border: 1px solid var(--border-glass); border-radius: 0.5rem; ">
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-glass);">
+                    <button type="button" onclick="showTable()" class="btn btn-outline">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan Soal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Forms Edit -->
+    @foreach($kuis as $k)
+    <div id="form-edit-{{ $k->id_kuis }}" class="animate-fade-in form-edit-container" style="display: none; width: 100%;">
+        <div class="glass-card" style="padding: 2.5rem; width: 100%;">
+            <div style="margin-bottom: 2rem;">
+                <h2 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-primary);">Edit Soal Kuis</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Perbarui informasi soal pilihan ganda.</p>
+            </div>
+            <form action="{{ route('admin.kuis.update', $k->id_kuis) }}" method="POST">
+                @csrf
+                @method('PUT')
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
+                    <div style="grid-column: span 2;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Pilih Modul</label>
+                        <select name="nama_modul" required style="width: 100%; padding: 0.85rem; border: 1px solid var(--border-glass); border-radius: 0.5rem; ">
+                            <option value="OLT" {{ $k->nama_modul == 'OLT' ? 'selected' : '' }}>OLT</option>
+                            <option value="ODC" {{ $k->nama_modul == 'ODC' ? 'selected' : '' }}>ODC</option>
+                            <option value="ODP" {{ $k->nama_modul == 'ODP' ? 'selected' : '' }}>ODP</option>
+                            <option value="ONT" {{ $k->nama_modul == 'ONT' ? 'selected' : '' }}>ONT</option>
+                            <option value="Splicing" {{ $k->nama_modul == 'Splicing' ? 'selected' : '' }}>Splicing</option>
+                        </select>
+                    </div>
+                    <div style="grid-column: span 2;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Pertanyaan</label>
+                        <textarea name="pertanyaan" rows="4" required style="width: 100%; padding: 0.85rem; border: 1px solid var(--border-glass); border-radius: 0.5rem; resize: vertical;">{{ $k->pertanyaan }}</textarea>
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Opsi A</label>
+                        <input type="text" name="opsi_a" required value="{{ $k->opsi_a }}" style="width: 100%; padding: 0.85rem; border: 1px solid var(--border-glass); border-radius: 0.5rem; ">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Opsi B</label>
+                        <input type="text" name="opsi_b" required value="{{ $k->opsi_b }}" style="width: 100%; padding: 0.85rem; border: 1px solid var(--border-glass); border-radius: 0.5rem; ">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Opsi C</label>
+                        <input type="text" name="opsi_c" required value="{{ $k->opsi_c }}" style="width: 100%; padding: 0.85rem; border: 1px solid var(--border-glass); border-radius: 0.5rem; ">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Opsi D</label>
+                        <input type="text" name="opsi_d" required value="{{ $k->opsi_d }}" style="width: 100%; padding: 0.85rem; border: 1px solid var(--border-glass); border-radius: 0.5rem; ">
+                    </div>
+                    <div style="grid-column: span 2;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Jawaban Benar</label>
+                        <select name="jawaban_benar" required style="width: 100%; padding: 0.85rem; border: 1px solid var(--border-glass); border-radius: 0.5rem; ">
+                            <option value="A" {{ $k->jawaban_benar == 'A' ? 'selected' : '' }}>A</option>
+                            <option value="B" {{ $k->jawaban_benar == 'B' ? 'selected' : '' }}>B</option>
+                            <option value="C" {{ $k->jawaban_benar == 'C' ? 'selected' : '' }}>C</option>
+                            <option value="D" {{ $k->jawaban_benar == 'D' ? 'selected' : '' }}>D</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-glass);">
+                    <button type="button" onclick="showTable()" class="btn btn-outline">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    @endforeach
 
         </div>
     </main>
 </div>
 
 <script>
-    function openModal(id) {
-        document.getElementById(id).classList.add('active');
-    }
-    function closeModal(id) {
-        document.getElementById(id).classList.remove('active');
-    }
-    document.querySelectorAll('.shad-dialog-overlay').forEach(overlay => {
-        overlay.addEventListener('mousedown', function(e) {
-            if(e.target === this) {
-                this.classList.remove('active');
-            }
+    function hideAllViews() {
+        document.getElementById('table-view').style.display = 'none';
+        document.getElementById('form-create').style.display = 'none';
+        document.querySelectorAll('.form-edit-container').forEach(el => {
+            el.style.display = 'none';
         });
-    });
+    }
+
+    function showTable() {
+        hideAllViews();
+        document.getElementById('table-view').style.display = 'block';
+    }
+
+    function showCreateForm() {
+        hideAllViews();
+        document.getElementById('form-create').style.display = 'block';
+    }
+
+    function showEditForm(id) {
+        hideAllViews();
+        document.getElementById(id).style.display = 'block';
+    }
 </script>
 
 <style>
     body > .navbar { display: none !important; }
 </style>
 @endsection
+

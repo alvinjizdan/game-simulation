@@ -93,7 +93,12 @@
                     @endforeach
                 </tbody>
             </table>
+                </div>
+                <div style="padding: 1rem; border-top: 1px solid var(--border-glass);">
+                    {{ $perangkat->links('pagination::bootstrap-5') }}
+                </div>
         </div>
     </div>
 </div>
 @endsection
+

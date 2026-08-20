@@ -11,21 +11,25 @@ class AdminController extends Controller
 {
     public function dashboard()
     {
-        // Rapor Peserta
-        $peserta = Pengguna::where('role', 'Peserta')->with('progressModul')->get();
+        // Rapor Peserta Aggregates
+        $totalPeserta = Pengguna::where('role', 'Peserta')->count();
         
-        $totalPeserta = $peserta->count();
-        $selesai = $peserta->filter(function($p) {
-            return $p->progressModul->count() == 5 && $p->progressModul->where('status_tugas', 'Selesai')->count() == 5;
-        })->count();
+        // Count users who have exactly 5 progress records marked as 'Selesai'
+        $selesai = Pengguna::where('role', 'Peserta')->whereHas('progressModul', function($q) {
+            $q->where('status_tugas', 'Selesai');
+        }, '=', 5)->count();
+        
         $belumSelesai = $totalPeserta - $selesai;
+
+        // Paginated data for table
+        $peserta = Pengguna::where('role', 'Peserta')->with('progressModul')->paginate(5);
 
         return view('admin.dashboard', compact('peserta', 'totalPeserta', 'selesai', 'belumSelesai'));
     }
 
     public function indexPeserta()
     {
-        $peserta = Pengguna::where('role', 'Peserta')->get();
+        $peserta = Pengguna::where('role', 'Peserta')->paginate(5);
         return view('admin.peserta.index', compact('peserta'));
     }
 
@@ -95,3 +99,4 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Progres misi peserta berhasil di-reset menjadi 0/5');
     }
 }
+

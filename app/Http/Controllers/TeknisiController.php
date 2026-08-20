@@ -13,7 +13,7 @@ class TeknisiController extends Controller
         $simulasi = SimulasiLpb::with('hasilKelayakan')
             ->where('id_user', Auth::id())
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate(5);
             
         return view('teknisi.dashboard', compact('simulasi'));
     }
@@ -70,3 +70,4 @@ class TeknisiController extends Controller
         return redirect()->route('teknisi.dashboard')->with('success', 'Riwayat simulasi berhasil dihapus.');
     }
 }
+

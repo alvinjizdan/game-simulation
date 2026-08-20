@@ -9,7 +9,7 @@ class KuisController extends Controller
 {
     public function index()
     {
-        $kuis = Kuis::orderBy('nama_modul')->get();
+        $kuis = Kuis::orderBy('nama_modul')->paginate(5);
         return view('admin.kuis.index', compact('kuis'));
     }
 
@@ -66,3 +66,4 @@ class KuisController extends Controller
         return redirect()->route('admin.kuis.index')->with('success', 'Soal Kuis berhasil dihapus');
     }
 }
+

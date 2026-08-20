@@ -1,59 +1,104 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+﻿# ViberLink LMS 🚀
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+ViberLink LMS (Learning Management System) adalah platform pembelajaran interaktif yang dirancang khusus untuk melatih dan menguji kemampuan Teknisi jaringan *Fiber To The Home* (FTTH). Platform ini menyediakan materi pembelajaran komprehensif, evaluasi kuis, serta simulasi praktik perancangan jaringan optik.
 
-## About Laravel
+Sistem ini dibangun sebagai pemenuhan tugas akhir (Skripsi) untuk memfasilitasi pembelajaran praktis teknisi fiber optik secara terstruktur dan terukur.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Fitur Utama
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Mode Peserta (Teknisi)
+- **Dashboard Pembelajaran Interaktif**: Melacak progres pembelajaran dengan indikator visual dan daftar modul yang tertata rapi.
+- **5 Modul Inti FTTH**:
+  - Modul OLT (Optical Line Terminal)
+  - Modul ODC (Optical Distribution Cabinet)
+  - Modul ODP (Optical Distribution Point)
+  - Modul ONT (Optical Network Terminal)
+  - Modul Splicing (Penyambungan Kabel Optik)
+- **Evaluasi Kuis**: Sistem kuis pilihan ganda dengan penilaian otomatis dan pencatatan skor tertinggi.
+- **Simulasi Praktik Jaringan (LPB)**: Fitur kalkulasi Link Power Budget (LPB) untuk menghitung kelayakan redaman jaringan fiber optik (Loss & Rx Daya Terima).
+- **Katalog Perangkat**: Menampilkan daftar dan spesifikasi perangkat jaringan optik standar.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Mode Administrator
+- **Rapor Peserta**: Dasbor analitik untuk memantau progres kelulusan semua teknisi (Total Peserta, Lulus, Belum Lulus).
+- **Manajemen Peserta**: Menambahkan, mengedit, dan menghapus akun teknisi.
+- **Manajemen Materi & Topik**: Mengelola konten teks, gambar, dan video pembelajaran untuk tiap modul.
+- **Manajemen Kuis**: Membuat dan menyusun bank soal pilihan ganda untuk setiap modul.
 
-## Learning Laravel
+## Teknologi yang Digunakan
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+- **Framework Backend**: [Laravel 10](https://laravel.com/) (PHP)
+- **Database**: MySQL
+- **Desain UI/UX**: Vanilla CSS dengan variabel kustom (mengadopsi sistem desain *Light Mode*, *Glassmorphism*).
+- **Ikon**: [Lucide Icons](https://lucide.dev/)
+- **Arsitektur**: Model-View-Controller (MVC)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Panduan Instalasi (Local Development)
 
-## Laravel Sponsors
+Ikuti langkah-langkah di bawah ini untuk menjalankan ViberLink LMS di komputer lokal Anda.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Prasyarat:
+- PHP >= 8.1
+- Composer
+- MySQL Server (XAMPP / Laragon / dll)
 
-### Premium Partners
+### Langkah Instalasi:
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+1. **Clone repositori ini**
+   `ash
+   git clone https://github.com/username-anda/viberlink-app.git
+   cd viberlink-app
+   `
 
-## Contributing
+2. **Install dependensi PHP**
+   `ash
+   composer install
+   `
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+3. **Konfigurasi Environment**
+   Salin file .env.example menjadi .env
+   `ash
+   cp .env.example .env
+   `
+   Buka file .env dan sesuaikan konfigurasi database Anda:
+   `env
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=viberlink_db
+   DB_USERNAME=root
+   DB_PASSWORD=
+   `
 
-## Code of Conduct
+4. **Generate Application Key**
+   `ash
+   php artisan key:generate
+   `
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+5. **Jalankan Migrasi & Seeder Database** (Untuk membuat tabel dan data awal)
+   `ash
+   php artisan migrate --seed
+   `
 
-## Security Vulnerabilities
+6. **Jalankan Server Lokal Laravel**
+   `ash
+   php artisan serve
+   `
+   Aplikasi kini dapat diakses melalui browser di alamat: http://localhost:8000
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Hak Akses (Role)
 
-## License
+Secara default, sistem memisahkan pengalaman pengguna berdasarkan otorisasi (*role*):
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+1. **Admin**
+   - Akses penuh ke ruang tata kelola (Dashboard Admin).
+   - Mampu mengelola data master (Materi, Kuis, Pengguna).
+   
+2. **Peserta (Teknisi)**
+   - Akses ke ruang pembelajaran interaktif (Dashboard Teknisi).
+   - Dapat mengerjakan kuis, membaca materi, dan melakukan simulasi.
+
+## UI & Sistem Desain
+Aplikasi ini dikembangkan menggunakan **Vanilla CSS (style.css)** dengan memanfaatkan *CSS Variables* untuk menciptakan desain komponen yang bersih, minimalis, dengan garis warna tegas (merah, kuning, hijau) untuk menandai berbagai kategori modul secara visual, membuat proses belajar lebih intuitif.
+
+## Lisensi
+Hak Cipta &copy; 2026. Aplikasi ini dibangun untuk keperluan edukasi dan tugas akhir akademik.

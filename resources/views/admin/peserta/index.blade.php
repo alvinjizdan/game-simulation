@@ -5,7 +5,7 @@
     <!-- Sidebar -->
     <aside class="shad-sidebar">
         <div class="shad-sidebar-header">
-            Viberlink Admin
+            ViberLink Admin
         </div>
         
         <div class="shad-nav-group">
@@ -109,6 +109,10 @@
                         </tbody>
                     </table>
                 </div>
+                <div style="padding: 1rem; border-top: 1px solid var(--border-glass);">
+                    {{ $peserta->links('pagination::bootstrap-5') }}
+                </div>
+                </div>
             </div>
 
         </div>
@@ -119,3 +123,4 @@
     body > .navbar { display: none !important; }
 </style>
 @endsection
+

@@ -5,7 +5,7 @@
     <!-- Sidebar -->
     <aside class="shad-sidebar">
         <div class="shad-sidebar-header">
-            Viberlink Admin
+            ViberLink Admin
         </div>
         
         <div class="shad-nav-group">
@@ -54,14 +54,16 @@
 
 
         <!-- Content Area -->
-        <div class="shad-content animate-fade-in">
-            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem;">
-                <div>
-                    <h1 style="font-size: 1.875rem; font-weight: 700; margin-bottom: 0.25rem;">Kelola Materi Pembelajaran</h1>
-                    <p style="color: var(--text-secondary); font-size: 0.875rem;">Tambahkan bahan bacaan dan link video edukasi ke dalam modul.</p>
-                </div>
-                <button type="button" onclick="openModal('modal-create')" class="btn btn-primary" style="display: inline-flex; gap: 0.5rem; align-items: center;">
-                    <i data-lucide="plus" style="width: 16px; height: 16px;"></i> Tambah Materi
+        <div class="shad-content">
+            
+            <div id="table-view" class="animate-fade-in">
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem;">
+                    <div>
+                        <h1 style="font-size: 1.875rem; font-weight: 700; margin-bottom: 0.25rem;">Kelola Materi Pembelajaran</h1>
+                        <p style="color: var(--text-secondary); font-size: 0.875rem;">Tambahkan bahan bacaan dan link video edukasi ke dalam modul.</p>
+                    </div>
+                    <button type="button" onclick="showCreateForm()" class="btn btn-primary" style="display: inline-flex; gap: 0.5rem; align-items: center;">
+                        <i data-lucide="plus" style="width: 16px; height: 16px;"></i> Tambah Materi
                 </button>
             </div>
 
@@ -97,7 +99,7 @@
                                     </div>
                                 </td>
                                 <td style="text-align: right;">
-                                    <button type="button" onclick="openModal('modal-edit-{{ $m->id_materi }}')" class="btn btn-outline" style="padding: 0.4rem 0.75rem; font-size: 0.75rem; display: inline-flex; align-items: center; gap: 4px;">
+                                    <button type="button" onclick="showEditForm('form-edit-{{ $m->id_materi }}')" class="btn btn-outline" style="padding: 0.4rem 0.75rem; font-size: 0.75rem; display: inline-flex; align-items: center; gap: 4px;">
                                         <i data-lucide="pencil" style="width: 14px; height: 14px;"></i> Edit
                                     </button>
                                     <form action="{{ route('admin.materi.destroy', $m->id_materi) }}" method="POST" style="display: inline;" onsubmit="return confirm('Hapus materi ini?');">
@@ -112,122 +114,137 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
-            <!-- Modal Create -->
-            <div id="modal-create" class="shad-dialog-overlay">
-                <div class="shad-dialog">
-                    <div class="shad-dialog-header">
-                        <div class="shad-dialog-title">Tambah Materi Baru</div>
-                        <div class="shad-dialog-description">Isi form di bawah ini untuk menambahkan materi ke dalam modul.</div>
-                    </div>
-                    <form action="{{ route('admin.materi.store') }}" method="POST">
-                        @csrf
-                        <div style="display: flex; flex-direction: column; gap: 1rem;">
-                            <div>
-                                <label>Pilih Modul</label>
-                                <select name="nama_modul" required>
-                                    <option value="OLT">OLT</option>
-                                    <option value="ODC">ODC</option>
-                                    <option value="ODP">ODP</option>
-                                    <option value="ONT">ONT</option>
-                                    <option value="Splicing">Splicing</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label>Judul Materi</label>
-                                <input type="text" name="judul" required placeholder="Contoh: Pengenalan OLT">
-                            </div>
-                            <div>
-                                <label>Deskripsi/Isi Materi</label>
-                                <textarea name="deskripsi" rows="5" required placeholder="Tuliskan isi materi di sini..."></textarea>
-                            </div>
-                            <div>
-                                <label>URL Video Edukasi (Opsional)</label>
-                                <input type="url" name="url_video" placeholder="https://youtube.com/...">
-                            </div>
-                            <div>
-                                <label>Urutan Materi (Angka)</label>
-                                <input type="number" name="urutan" required min="1" value="1">
-                            </div>
-                        </div>
-                        <div class="shad-dialog-footer">
-                            <button type="button" onclick="closeModal('modal-create')" class="btn btn-outline">Batal</button>
-                            <button type="submit" class="btn btn-primary">Simpan Materi</button>
-                        </div>
-                    </form>
+                <div style="padding: 1rem; border-top: 1px solid var(--border-glass);">
+                    {{ $materi->links('pagination::bootstrap-5') }}
+                </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Modals Edit -->
-            @foreach($materi as $m)
-            <div id="modal-edit-{{ $m->id_materi }}" class="shad-dialog-overlay">
-                <div class="shad-dialog">
-                    <div class="shad-dialog-header">
-                        <div class="shad-dialog-title">Edit Materi</div>
-                        <div class="shad-dialog-description">Perbarui informasi materi.</div>
-                    </div>
-                    <form action="{{ route('admin.materi.update', $m->id_materi) }}" method="POST">
-                        @csrf
-                        @method('PUT')
-                        <div style="display: flex; flex-direction: column; gap: 1rem;">
-                            <div>
-                                <label>Pilih Modul</label>
-                                <select name="nama_modul" required>
-                                    <option value="OLT" {{ $m->nama_modul == 'OLT' ? 'selected' : '' }}>OLT</option>
-                                    <option value="ODC" {{ $m->nama_modul == 'ODC' ? 'selected' : '' }}>ODC</option>
-                                    <option value="ODP" {{ $m->nama_modul == 'ODP' ? 'selected' : '' }}>ODP</option>
-                                    <option value="ONT" {{ $m->nama_modul == 'ONT' ? 'selected' : '' }}>ONT</option>
-                                    <option value="Splicing" {{ $m->nama_modul == 'Splicing' ? 'selected' : '' }}>Splicing</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label>Judul Materi</label>
-                                <input type="text" name="judul" required value="{{ $m->judul }}">
-                            </div>
-                            <div>
-                                <label>Deskripsi/Isi Materi</label>
-                                <textarea name="deskripsi" rows="5" required>{{ $m->deskripsi }}</textarea>
-                            </div>
-                            <div>
-                                <label>URL Video Edukasi (Opsional)</label>
-                                <input type="url" name="url_video" value="{{ $m->url_video }}">
-                            </div>
-                            <div>
-                                <label>Urutan Materi (Angka)</label>
-                                <input type="number" name="urutan" required min="1" value="{{ $m->urutan }}">
-                            </div>
-                        </div>
-                        <div class="shad-dialog-footer">
-                            <button type="button" onclick="closeModal('modal-edit-{{ $m->id_materi }}')" class="btn btn-outline">Batal</button>
-                            <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
-                        </div>
-                    </form>
-                </div>
+    <!-- Form Create -->
+    <div id="form-create" class="animate-fade-in" style="display: none; width: 100%;">
+        <div class="glass-card" style="padding: 2.5rem; width: 100%;">
+            <div style="margin-bottom: 2rem;">
+                <h2 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-primary);">Tambah Materi Baru</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Isi form di bawah ini untuk menambahkan materi ke dalam modul.</p>
             </div>
-            @endforeach
+            <form action="{{ route('admin.materi.store') }}" method="POST">
+                @csrf
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Pilih Modul</label>
+                        <select name="nama_modul" required style="width: 100%; padding: 0.85rem; border: 1px solid var(--border-glass); border-radius: 0.5rem; ">
+                            <option value="OLT">OLT</option>
+                            <option value="ODC">ODC</option>
+                            <option value="ODP">ODP</option>
+                            <option value="ONT">ONT</option>
+                            <option value="Splicing">Splicing</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Judul Materi</label>
+                        <input type="text" name="judul" required placeholder="Contoh: Pengenalan OLT" style="width: 100%; padding: 0.85rem; border: 1px solid var(--border-glass); border-radius: 0.5rem; ">
+                    </div>
+                    <div style="grid-column: span 2;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Deskripsi/Isi Materi</label>
+                        <textarea name="deskripsi" rows="8" required placeholder="Tuliskan isi materi di sini..." style="width: 100%; padding: 0.85rem; border: 1px solid var(--border-glass); border-radius: 0.5rem; resize: vertical;"></textarea>
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">URL Video Edukasi (Opsional)</label>
+                        <input type="url" name="url_video" placeholder="https://youtube.com/..." style="width: 100%; padding: 0.85rem; border: 1px solid var(--border-glass); border-radius: 0.5rem; ">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Urutan Materi (Angka)</label>
+                        <input type="number" name="urutan" required min="1" value="1" style="width: 100%; padding: 0.85rem; border: 1px solid var(--border-glass); border-radius: 0.5rem; ">
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-glass);">
+                    <button type="button" onclick="showTable()" class="btn btn-outline">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan Materi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Forms Edit -->
+    @foreach($materi as $m)
+    <div id="form-edit-{{ $m->id_materi }}" class="animate-fade-in form-edit-container" style="display: none; width: 100%;">
+        <div class="glass-card" style="padding: 2.5rem; width: 100%;">
+            <div style="margin-bottom: 2rem;">
+                <h2 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-primary);">Edit Materi</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Perbarui informasi materi di bawah ini.</p>
+            </div>
+            <form action="{{ route('admin.materi.update', $m->id_materi) }}" method="POST">
+                @csrf
+                @method('PUT')
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Pilih Modul</label>
+                        <select name="nama_modul" required style="width: 100%; padding: 0.85rem; border: 1px solid var(--border-glass); border-radius: 0.5rem; ">
+                            <option value="OLT" {{ $m->nama_modul == 'OLT' ? 'selected' : '' }}>OLT</option>
+                            <option value="ODC" {{ $m->nama_modul == 'ODC' ? 'selected' : '' }}>ODC</option>
+                            <option value="ODP" {{ $m->nama_modul == 'ODP' ? 'selected' : '' }}>ODP</option>
+                            <option value="ONT" {{ $m->nama_modul == 'ONT' ? 'selected' : '' }}>ONT</option>
+                            <option value="Splicing" {{ $m->nama_modul == 'Splicing' ? 'selected' : '' }}>Splicing</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Judul Materi</label>
+                        <input type="text" name="judul" required value="{{ $m->judul }}" style="width: 100%; padding: 0.85rem; border: 1px solid var(--border-glass); border-radius: 0.5rem; ">
+                    </div>
+                    <div style="grid-column: span 2;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Deskripsi/Isi Materi</label>
+                        <textarea name="deskripsi" rows="8" required style="width: 100%; padding: 0.85rem; border: 1px solid var(--border-glass); border-radius: 0.5rem; resize: vertical;">{{ $m->deskripsi }}</textarea>
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">URL Video Edukasi (Opsional)</label>
+                        <input type="url" name="url_video" value="{{ $m->url_video }}" style="width: 100%; padding: 0.85rem; border: 1px solid var(--border-glass); border-radius: 0.5rem; ">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Urutan Materi (Angka)</label>
+                        <input type="number" name="urutan" required min="1" value="{{ $m->urutan }}" style="width: 100%; padding: 0.85rem; border: 1px solid var(--border-glass); border-radius: 0.5rem; ">
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-glass);">
+                    <button type="button" onclick="showTable()" class="btn btn-outline">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    @endforeach
 
         </div>
     </main>
 </div>
 
 <script>
-    function openModal(id) {
-        document.getElementById(id).classList.add('active');
-    }
-    function closeModal(id) {
-        document.getElementById(id).classList.remove('active');
-    }
-    // Close modal if clicking outside the dialog content
-    document.querySelectorAll('.shad-dialog-overlay').forEach(overlay => {
-        overlay.addEventListener('mousedown', function(e) {
-            if(e.target === this) {
-                this.classList.remove('active');
-            }
+    function hideAllViews() {
+        document.getElementById('table-view').style.display = 'none';
+        document.getElementById('form-create').style.display = 'none';
+        document.querySelectorAll('.form-edit-container').forEach(el => {
+            el.style.display = 'none';
         });
-    });
+    }
+
+    function showTable() {
+        hideAllViews();
+        document.getElementById('table-view').style.display = 'block';
+    }
+
+    function showCreateForm() {
+        hideAllViews();
+        document.getElementById('form-create').style.display = 'block';
+    }
+
+    function showEditForm(id) {
+        hideAllViews();
+        document.getElementById(id).style.display = 'block';
+    }
 </script>
 
 <style>
     body > .navbar { display: none !important; }
 </style>
 @endsection
+

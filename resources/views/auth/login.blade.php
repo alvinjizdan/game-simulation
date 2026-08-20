@@ -1,9 +1,9 @@
 @extends('layouts.app')
 @section('content')
 <div style="display: flex; justify-content: center; align-items: center; min-height: 80vh;">
-    <div class="card" style="width: 100%; max-width: 400px; padding: 2rem;">
+    <div class="glass-card" style="width: 100%; max-width: 400px; padding: 2rem;">
         <h2 style="text-align: center; margin-top: 0;">Portal Login</h2>
-        <p style="text-align: center; color: #94a3b8; margin-bottom: 2rem;">Masuk ke Ruang Kendali Admin</p>
+        <p style="text-align: center; color: var(--text-secondary); margin-bottom: 2rem;"></p>
         
         @if($errors->any())
             <div style="background: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 10px; border-radius: 4px; margin-bottom: 15px; border: 1px solid #ef4444;">

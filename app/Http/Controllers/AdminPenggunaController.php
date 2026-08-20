@@ -10,7 +10,7 @@ class AdminPenggunaController extends Controller
 {
     public function index()
     {
-        $pengguna = Pengguna::all();
+        $pengguna = Pengguna::paginate(5);
         return view('admin.pengguna.index', compact('pengguna'));
     }
 
@@ -60,3 +60,4 @@ class AdminPenggunaController extends Controller
         return redirect()->back()->with('success', 'Pengguna berhasil dihapus.');
     }
 }
+

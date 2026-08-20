@@ -9,7 +9,7 @@ class AdminPerangkatController extends Controller
 {
     public function index()
     {
-        $perangkat = PerangkatFtth::all();
+        $perangkat = PerangkatFtth::paginate(5);
         return view('admin.perangkat.index', compact('perangkat'));
     }
 
@@ -50,3 +50,4 @@ class AdminPerangkatController extends Controller
         return redirect()->back()->with('success', 'Perangkat berhasil dihapus.');
     }
 }
+
